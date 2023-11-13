@@ -1,5 +1,5 @@
 {
-    //JavaScript
+    // JavaScript
     // let => es6, 도입
     // const
     // Primitive: number, string, boolean, bigint, symbol, null, undefined
