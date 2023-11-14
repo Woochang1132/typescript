@@ -18,25 +18,9 @@
         reason : string;
     }
     type LoginState = SuccessState | FailState
-    // =============================================================================================
-    // function loing => success, fail
-    function login() : LoginState{
-        return {
-            response:{
-                body: 'login in'
-            }
-        }
-    }
     // ===============================================================================================
     // printLoginState(state : LoginState)
     // success => ✅ body
     // fail    => ❎ reason  
-    function printLoginState(state : LoginState) : void{
-        if('response' in state){
-            console.log(`${state.response.body}`)
-        }else{
-            console.log(`${state.reason}`);
-        }
-    }
     
 }
