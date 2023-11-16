@@ -8,19 +8,13 @@
     interface CoffeeMaker{
         makeCoffee(shots : number): CoffeeCup;
     }
-
-    interface CommercialCoffeeMaker{
-        makeCoffee(shots : number): CoffeeCup;
-        fillCoffeeBeans(beans : number) : void;
-        clean() : void
-    }
-
-    class CoffeeMachine implements CoffeeMaker, CommercialCoffeeMaker{
+    
+    class CoffeeMachine implements CoffeeMaker{
         private static BEANS_GRAM_PER_SHOT = 7; // class level
         private coffeeBeans : number = 0; // instance(object)level
     
         //외부에서 new 연산자를 통해 객체 만드는 것을 방지한다.
-      private constructor(coffeeBeans : number){
+      public constructor(coffeeBeans : number){
             this.coffeeBeans = coffeeBeans;
         }
     
@@ -65,47 +59,31 @@
         }
     }
 
-        
-/*         
-        console.log("maker >>", maker)
-        maker.fillCoffeeBeans(2);
-        maker.makeCoffee(2); 
-*/
-/*
-        const commercialMaker : CommercialCoffeeMaker = CoffeeMachine.makeMachine(62);
-  
-        commercialMaker.fillCoffeeBeans(30);
-        commercialMaker.makeCoffee(10);
-        commercialMaker.clean() 
-*/
-        
-        class AmateurUser{
-            constructor(private machine : CoffeeMaker){}
-            makeCoffee(){
-                const coffee = this.machine.makeCoffee(2);
-                console.log("AmateurUser >>", coffee);
-            }
-            clean() : void{
-                console.log("cleaning the roomd")
-            }
+    class CoffeeLatteMachine extends CoffeeMachine{
+        constructor(beans: number, public readonly serialNumber : string){
+            super(beans);
+        }
+        private steamMilk() : void {
+            console.log('Streaming some milk...');
         }
 
-        class ProBarista{
-            constructor(private machine : CommercialCoffeeMaker){}
-            makeCoffee(){
-                const coffee = this.machine.makeCoffee(1);
-                console.log("ProBarista >>", coffee);
-                this.machine.fillCoffeeBeans(30);
-                this.machine.clean();
-
+        makeCoffee(shots: number ): CoffeeCup{
+            const coffee = super.makeCoffee(shots);
+            console.log("상속에서의 coffee >>", coffee)
+            this.steamMilk();
+            return {
+                ...coffee,
+                hasMilk: true
             }
         }
+        
+    }
+    const machine = new CoffeeMachine(23);
+    const latteMachine = new CoffeeLatteMachine(30, "SSSS");
+    const coffee = latteMachine.makeCoffee(1);
+    console.log("latteMachine.serialNumber >>", latteMachine.serialNumber)
+    
 
 
-        const maker : CoffeeMachine = CoffeeMachine.makeMachine(30);
-        const amateur = new AmateurUser(maker);
-        const pro = new ProBarista(maker);
 
-        amateur.makeCoffee();
-        pro.makeCoffee();
     }
