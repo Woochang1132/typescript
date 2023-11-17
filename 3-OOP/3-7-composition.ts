@@ -15,14 +15,12 @@
         private coffeeBeans : number = 0; // instance(object)level
     
         //외부에서 new 연산자를 통해 객체 만드는 것을 방지한다.
-      public constructor(coffeeBeans : number){
+      public constructor(coffeeBeans : number,
+            private milk : MilkFrother,
+            private sugar : SugarProvider){
             this.coffeeBeans = coffeeBeans;
         }
     
-        static makeMachine(coffeeBeans: number) : CoffeeMachine{
-            return new CoffeeMachine(coffeeBeans);
-        }
-
         clean() : void{
             console.log("cleaning the machine");
         }
@@ -56,11 +54,18 @@
         makeCoffee(shots : number): CoffeeCup {
             this.grindBeans(shots);
             this.preheat();
-            return this.extract(shots);
+            const coffee = this.extract(shots);
+            const sugarAdded = this.sugar.addSugar(coffee);
+            return this.milk.makeMilk(sugarAdded);
         }
     }
+
+    interface MilkFrother{
+        makeMilk(cup : CoffeeCup) : CoffeeCup
+    }
+
     // 싸구려 우유 거품기
-    class CheapMilkSteamer{
+    class CheapMilkSteamer implements MilkFrother{
         private steamMilk() : void {
             console.log('Steaming some milk...');
         }
@@ -71,11 +76,62 @@
             }
         }
     }
+
+    class FancyMilkSteamer implements MilkFrother{
+        private steamMilk() : void {
+            console.log('Fancy Steaming some Fancy milk...');
+        }
+        makeMilk(cup : CoffeeCup) : CoffeeCup{
+            return {
+                ...cup,
+                hasMilk : true
+            }
+        }
+    }
+
+    class coldMilkSteamer implements MilkFrother{
+        private steamMilk() : void {
+            console.log('cold Steaming some cold milk...');
+        }
+        makeMilk(cup : CoffeeCup) : CoffeeCup{
+            return {
+                ...cup,
+                hasMilk : true
+            }
+        }
+    }
+
+    class NoMilk implements MilkFrother{
+        makeMilk(cup : CoffeeCup) : CoffeeCup{
+            return cup;
+        }
+    }
+
+    interface SugarProvider{
+        addSugar(cup : CoffeeCup) : CoffeeCup
+    }
+
+    class CandySugarMixer implements SugarProvider{
+        private getSugar() {
+            console.log("Getting some sugar from jar.... ");
+            return true;
+        }
+        
+        addSugar(cup : CoffeeCup) : CoffeeCup{
+            const sugar = this.getSugar();
+            return {
+                ...cup,
+                hasSugar : sugar
+            }
+        }
+
+    }
+
     
     // 설탕 제조기
-    class AutomaticSugarMixer{
+    class SugarMixer implements SugarProvider{
         private getSugar() {
-            console.log("Getting some sugar from candy ");
+            console.log("Getting some sugar from jar.... ");
             return true;
         }
         
@@ -88,45 +144,36 @@
         }
     } 
 
-
-    class CoffeeLatteMachine extends CoffeeMachine{
-        constructor(
-            beans: number, 
-            public readonly serialNumber: string, 
-            private milkFrother: CheapMilkSteamer ){
-            super(beans);
+    class NoSugar implements SugarProvider{
+        addSugar(cup : CoffeeCup) : CoffeeCup{
+            return cup;
         }
-
-
-        makeCoffee(shots: number ): CoffeeCup{
-            const coffee = super.makeCoffee(shots);
-            return this.milkFrother.makeMilk(coffee);
-        }
-        
     }
-    class SweetCoffeeMaker extends CoffeeMachine{
-        constructor(private beans: number ,private sugar: AutomaticSugarMixer){
-            super(beans)
-        }
-        makeCoffee(shots: number): CoffeeCup {
-            const coffee = super.makeCoffee(shots);
-            return this.sugar.addSugar(coffee);
-        }   
-     }
 
-     class SweetCoffeLatteMachine extends CoffeeMachine{
-        constructor(
-            private beans: number, 
-            private milk: CheapMilkSteamer,  
-            private sugar: AutomaticSugarMixer){
-                super(beans)
-            }
-           makeCoffee(shots : number): CoffeeCup{
-            const coffee = super.makeCoffee(shots);
-            const sugarAdded = this.sugar.addSugar(coffee);
-            return this.milk.makeMilk(sugarAdded);
-           }
-     }
 
-    const machine = new CoffeeMachine(23);
-    }
+
+     // Milk
+    const cheapMilkMaker = new CheapMilkSteamer();
+    const fancyMilkMaker = new FancyMilkSteamer();
+    const coldMilkMaker = new coldMilkSteamer();
+    const noMilk = new NoMilk();
+    // Sugar
+    const candySugar = new CandySugarMixer();
+    const sugar = new SugarMixer();
+    const noSugar = new NoSugar();
+
+
+    const sweetCandyMachine = new CoffeeMachine(12, noMilk,candySugar);
+    const sweetMachine = new CoffeeMachine(12, noMilk ,sugar);
+
+    const latteMachine = new CoffeeMachine(12 , cheapMilkMaker, noSugar);
+    const coldLatteMachine = new CoffeeMachine(12, coldMilkMaker, noSugar);
+    const sweetLatteMachine = new CoffeeMachine(
+        12,
+        cheapMilkMaker,
+        candySugar
+    )
+   
+
+
+}
