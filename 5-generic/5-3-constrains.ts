@@ -37,4 +37,22 @@ bob.workPartTime();
 const ellieAfterPay = pay(ellie);
 ellieAfterPay.workFullTIme();
 
+const obj = {
+    name : 'woochang',
+    age : 20
+}
+
+const obj2 ={
+    animal : '🐆'
+};
+
+// object T의 키중에서 하나의 값이여야 하고
+// return 되는 value 또한, T에 해당 키를 넣은 값이고
+function getValue<T,K extends keyof T>(obj : T, key: K ) : T[K] {
+    // key를 주입하면 value가 나올 수 있도록?
+        return obj[key]
+    
+}
+
+console.log(getValue(obj, 'name'))
 
