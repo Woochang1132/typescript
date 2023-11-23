@@ -6,9 +6,9 @@
         data : string
     }
 
-    type VideoMetadata =  Pick<Video, 'id' | 'title'>
+    type VideoMetadata =  Omit<Video, 'url' | 'data'>
 
-    function dupGetVideo(id : string) : Video{
+    function getVideo(id : string) : Video{
         return {
             id,
             title : 'video',
@@ -17,7 +17,7 @@
         };
     }
 
-    function dupGetVideoMetadata(id : string ) : VideoMetadata{
+    function getVideoMetadata(id : string ) : VideoMetadata{
         return {
             id : id,
             title : 'title'
