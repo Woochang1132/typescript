@@ -45,10 +45,10 @@
         const maker = CoffeeMaker.makeMachine(30);
         //maker.coffeeBeans = 3; // 내부 상태를 외부에서 바꾸는 경우가 발생하게 됨
         maker.fillCoffeeBeans(32);
-        console.log("maker >>" , maker)
+        //console.log("maker >>" , maker)
 
         class User{
-            get fullName(): string {
+                        get fullName(): string {
                 return `${this.firstName} ${this.lastName}`
             }
             private interalAge = 4;
@@ -62,13 +62,33 @@
                 this.interalAge = num;
             }
             // 이렇게 설정하면 this.firstName = firstName을 함축하고 있다.
-            constructor(private firstName : string, public lastName : string){
+constructor(private firstName : string, public lastName : string){
             }
         }
         const user = new User('Steve', 'Jobs');
-        user.age = 6
-        console.log("user get >>", user.age)
-        console.log("user >>", user);
+                user.age = 6
+        //console.log("user get >>", user.age)
+        //console.log("user >>", user);
         //  get 함수에 접근할 때 => 멤버 변수에 접근하는 것처럼 이용하면 된다.
 
+        class UserText {
+            firstName: string;
+            lastName: string;
+            fullName: string;
+            constructor(firstName: string, lastName: string){
+                this.firstName = firstName;
+                this.lastName = lastName;
+                this.fullName = `${this.firstName} ${this.lastName}`
+
+            }
+            get Name(): string {
+                return `${this.firstName} ${this.lastName}`
+            } 
+        }
+        const userText = new UserText('Choi', 'Woochang');
+        console.log(userText.fullName);
+        userText.firstName = 'Ellie';
+        console.log(userText.fullName);
+        console.log(userText.firstName);
+        console.log(userText.Name);
     }
